@@ -1,0 +1,22 @@
+# Xcode 编译产物
+build/
+DerivedData/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# 包管理
+.swiftpm/
+
+# macOS
+.DS_Store
+*.swp
+*~.nib
+
+# 代码签名
+*.cer
+*.p12
+*.mobileprovision
+
+# 备份
+*.bak
