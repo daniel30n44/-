@@ -1,11 +1,13 @@
 import SwiftUI
 
+// MARK: - 设置窗口 · Settings (Liquid Glass)
+
 struct SettingsView: View {
     @ObservedObject var dataStore: DataStore
+    @Environment(\.colorScheme) private var colorScheme
     @State private var selectedDays: Int
     @State private var launchAtLogin: Bool
 
-    /// LaunchAgent plist 路径
     private static let launchAgentURL = URL(
         fileURLWithPath: NSHomeDirectory()
     ).appendingPathComponent("Library/LaunchAgents/com.historyclipboard.plist")
@@ -19,41 +21,65 @@ struct SettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // 标题
-            Text("设置")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .foregroundColor(Color(hex: "2C6E91"))
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-                .padding(.bottom, 16)
+            HStack(spacing: 10) {
+                ZStack {
+                    Circle()
+                        .fill(colorScheme == .dark
+                            ? Color.white.opacity(0.12)
+                            : Color.white.opacity(0.65))
+                        .frame(width: 28, height: 28)
+                        .shadow(color: .black.opacity(colorScheme == .dark ? 0 : 0.03), radius: 4, y: 2)
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(Color(hex: "5BA4C9"))
+                }
+                Text("设置")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(.primary.opacity(0.85))
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 20)
+            .padding(.bottom, 14)
 
-            Divider()
+            glassDivider
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
+                VStack(alignment: .leading, spacing: 24) {
                     // 保留天数
                     settingsSection(
                         icon: "clock.arrow.circlepath",
                         title: "历史保留时长",
                         description: "超过设定天数的记录会自动清理，置顶条目不受影响"
                     ) {
-                        HStack(spacing: 12) {
+                        HStack(spacing: 8) {
                             ForEach([1, 3, 5], id: \.self) { days in
                                 Button(action: {
                                     selectedDays = days
                                     dataStore.retentionDays = days
                                 }) {
                                     Text("\(days) 天")
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(selectedDays == days ? .white : Color(hex: "5BA4C9"))
-                                        .padding(.horizontal, 20)
+                                        .font(.system(size: 13, weight: .medium))
+                                        .foregroundColor(
+                                            selectedDays == days
+                                                ? .white.opacity(0.95)
+                                                : Color(hex: "5BA4C9").opacity(0.8)
+                                        )
+                                        .padding(.horizontal, 22)
                                         .padding(.vertical, 10)
                                         .background(
-                                            RoundedRectangle(cornerRadius: 8)
-                                                .fill(
-                                                    selectedDays == days
-                                                        ? Color(hex: "5BA4C9")
-                                                        : Color(hex: "E8F4F9")
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .fill(pillBackgroundColor(isSelected: selectedDays == days))
+                                                .shadow(
+                                                    color: pillShadowColor(isSelected: selectedDays == days),
+                                                    radius: selectedDays == days ? 6 : 3,
+                                                    y: 2
+                                                )
+                                        )
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(
+                                                    pillStrokeColor(isSelected: selectedDays == days),
+                                                    lineWidth: 0.8
                                                 )
                                         )
                                 }
@@ -62,32 +88,35 @@ struct SettingsView: View {
                         }
                     }
 
-                    Divider()
-                        .padding(.horizontal, 20)
+                    glassDivider
 
                     // 开机自启
                     settingsSection(
                         icon: "power",
                         title: "开机自动启动",
-                        description: "登录系统时自动运行历史粘贴板"
+                        description: "登录系统时自动在菜单栏运行"
                     ) {
-                        Toggle(isOn: $launchAtLogin) {
+                        HStack {
                             Text(launchAtLogin ? "已开启" : "已关闭")
-                                .font(.system(size: 14))
+                                .font(.system(size: 13))
                                 .foregroundColor(
-                                    launchAtLogin ? Color(hex: "4CAF50") : .secondary
+                                    launchAtLogin
+                                        ? Color(hex: "4CAF50").opacity(0.85)
+                                        : .secondary.opacity(0.6)
                                 )
+                            Spacer()
+                            Toggle(isOn: $launchAtLogin) {}
+                                .toggleStyle(.switch)
+                                .onChange(of: launchAtLogin) { _, newValue in
+                                    toggleLaunchAtLogin(newValue)
+                                }
                         }
-                        .toggleStyle(.switch)
-                        .onChange(of: launchAtLogin) { oldValue, newValue in
-                            toggleLaunchAtLogin(newValue)
-                        }
+                        .padding(.horizontal, 4)
                     }
 
-                    Divider()
-                        .padding(.horizontal, 20)
+                    glassDivider
 
-                    // 统计信息
+                    // 存储信息
                     settingsSection(
                         icon: "info.circle",
                         title: "存储信息",
@@ -105,7 +134,60 @@ struct SettingsView: View {
             }
         }
         .frame(width: 420, height: 480)
-        .background(Color(hex: "F5F9FC"))
+        .background(
+            ZStack {
+                if colorScheme == .dark {
+                    LinearGradient(
+                        colors: [Color(hex: "2C2C30"), Color(hex: "26262A"), Color(hex: "28282C")],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                } else {
+                    LinearGradient(
+                        colors: [Color(hex: "F8FBFD"), Color(hex: "F0F6FA"), Color(hex: "F4F8FB")],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                Rectangle().fill(.regularMaterial)
+            }
+        )
+    }
+
+    private func pillBackgroundColor(isSelected: Bool) -> Color {
+        if isSelected {
+            return Color(hex: "5BA4C9").opacity(0.85)
+        }
+        return colorScheme == .dark
+            ? Color.white.opacity(0.08)
+            : Color.white.opacity(0.55)
+    }
+
+    private func pillShadowColor(isSelected: Bool) -> Color {
+        if isSelected {
+            return Color(hex: "5BA4C9").opacity(0.2)
+        }
+        return Color.black.opacity(colorScheme == .dark ? 0 : 0.02)
+    }
+
+    private func pillStrokeColor(isSelected: Bool) -> Color {
+        if isSelected {
+            return Color.white.opacity(0.4)
+        }
+        return colorScheme == .dark
+            ? Color.white.opacity(0.1)
+            : Color.white.opacity(0.5)
+    }
+
+    // MARK: - 分割线
+
+    private var glassDivider: some View {
+        Rectangle()
+            .fill(colorScheme == .dark
+                ? Color.white.opacity(0.08)
+                : Color.white.opacity(0.35))
+            .frame(height: 0.5)
+            .padding(.horizontal, 20)
     }
 
     // MARK: - 设置区块
@@ -119,18 +201,18 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Image(systemName: icon)
-                    .foregroundColor(Color(hex: "5BA4C9"))
-                    .font(.system(size: 16))
+                    .foregroundColor(Color(hex: "5BA4C9").opacity(0.7))
+                    .font(.system(size: 14, weight: .light))
                 Text(title)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.primary)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.primary.opacity(0.8))
             }
             .padding(.horizontal, 20)
 
             if let description = description {
                 Text(description)
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary.opacity(0.6))
                     .padding(.horizontal, 20)
             }
 
@@ -147,14 +229,11 @@ struct SettingsView: View {
         } else {
             removeLaunchAgent()
         }
-        // 立即刷新状态
         launchAtLogin = FileManager.default.fileExists(atPath: Self.launchAgentURL.path)
     }
 
-    /// 创建 LaunchAgent plist 并加载
     private func createLaunchAgent() {
         let appPath = Bundle.main.bundlePath
-
         let plistContent = """
         <?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -174,10 +253,8 @@ struct SettingsView: View {
         </dict>
         </plist>
         """
-
         do {
             try plistContent.write(to: Self.launchAgentURL, atomically: true, encoding: .utf8)
-            // 注册到 launchd
             let task = Process()
             task.launchPath = "/bin/launchctl"
             task.arguments = ["load", Self.launchAgentURL.path]
@@ -188,21 +265,17 @@ struct SettingsView: View {
         }
     }
 
-    /// 移除 LaunchAgent plist
     private func removeLaunchAgent() {
-        // 先从 launchd 卸载
         let unloadTask = Process()
         unloadTask.launchPath = "/bin/launchctl"
         unloadTask.arguments = ["unload", Self.launchAgentURL.path]
         try? unloadTask.run()
         unloadTask.waitUntilExit()
-
-        // 再删除 plist 文件
         try? FileManager.default.removeItem(at: Self.launchAgentURL)
     }
 }
 
-// MARK: - 信息行
+// MARK: - 信息行 · Info Row
 
 struct InfoRow: View {
     let label: String
@@ -211,12 +284,12 @@ struct InfoRow: View {
     var body: some View {
         HStack {
             Text(label)
-                .font(.system(size: 13))
-                .foregroundColor(.secondary)
+                .font(.system(size: 12))
+                .foregroundColor(.secondary.opacity(0.6))
             Spacer()
             Text(value)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.primary)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.primary.opacity(0.7))
         }
     }
 }
