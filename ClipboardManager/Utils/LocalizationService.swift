@@ -91,6 +91,9 @@ class LocalizationService: ObservableObject {
         "settings.storage.image": "图片记录",
         "settings.storage.pinned": "置顶条目",
         "settings.storage.unit": "%d 条",
+        "settings.updates.title": "软件更新",
+        "settings.updates.description": "检查是否有新版本可用",
+        "settings.updates.check_button": "检查更新",
 
         // ---- Navigation ----
         "nav.home": "历史粘贴板",
@@ -151,6 +154,9 @@ class LocalizationService: ObservableObject {
         "settings.storage.image": "Image Records",
         "settings.storage.pinned": "Pinned Items",
         "settings.storage.unit": "%d items",
+        "settings.updates.title": "Software Update",
+        "settings.updates.description": "Check if a newer version is available",
+        "settings.updates.check_button": "Check for Updates",
 
         // ---- Navigation ----
         "nav.home": "Clipboard History",
@@ -211,6 +217,9 @@ class LocalizationService: ObservableObject {
         "settings.storage.image": "画像記録",
         "settings.storage.pinned": "ピン留め",
         "settings.storage.unit": "%d件",
+        "settings.updates.title": "ソフトウェアアップデート",
+        "settings.updates.description": "新しいバージョンが利用可能か確認します",
+        "settings.updates.check_button": "アップデートを確認",
 
         // ---- Navigation ----
         "nav.home": "クリップボード履歴",
@@ -271,6 +280,9 @@ class LocalizationService: ObservableObject {
         "settings.storage.image": "이미지 기록",
         "settings.storage.pinned": "고정 항목",
         "settings.storage.unit": "%d개",
+        "settings.updates.title": "소프트웨어 업데이트",
+        "settings.updates.description": "새 버전이 있는지 확인합니다",
+        "settings.updates.check_button": "업데이트 확인",
 
         // ---- Navigation ----
         "nav.home": "클립보드 기록",
@@ -331,6 +343,9 @@ class LocalizationService: ObservableObject {
         "settings.storage.image": "Registros de imagen",
         "settings.storage.pinned": "Elementos fijados",
         "settings.storage.unit": "%d elementos",
+        "settings.updates.title": "Actualización de software",
+        "settings.updates.description": "Verificar si hay una nueva versión disponible",
+        "settings.updates.check_button": "Buscar actualizaciones",
 
         // ---- Navigation ----
         "nav.home": "Historial del portapapeles",
@@ -391,6 +406,9 @@ class LocalizationService: ObservableObject {
         "settings.storage.image": "Registros de imagem",
         "settings.storage.pinned": "Itens fixados",
         "settings.storage.unit": "%d itens",
+        "settings.updates.title": "Atualização de software",
+        "settings.updates.description": "Verificar se há uma nova versão disponível",
+        "settings.updates.check_button": "Verificar atualizações",
 
         // ---- Navigation ----
         "nav.home": "Histórico da área de transferência",

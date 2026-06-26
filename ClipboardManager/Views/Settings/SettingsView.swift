@@ -1,4 +1,5 @@
 import SwiftUI
+import Sparkle
 
 // MARK: - 设置窗口 · Settings (Liquid Glass)
 
@@ -160,6 +161,35 @@ struct SettingsView: View {
                                 value: localization.loc("settings.storage.unit", dataStore.items.filter { $0.isPinned }.count)
                             )
                         }
+                    }
+
+                    glassDivider
+
+                    // 检查更新
+                    settingsSection(
+                        icon: "arrow.triangle.2.circlepath.icloud",
+                        title: localization.loc("settings.updates.title"),
+                        description: localization.loc("settings.updates.description")
+                    ) {
+                        Button(action: {
+                            SUUpdater.shared()?.checkForUpdates(nil)
+                        }) {
+                            Text(localization.loc("settings.updates.check_button"))
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundColor(.white.opacity(0.95))
+                                .padding(.horizontal, 22)
+                                .padding(.vertical, 10)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color(hex: "5BA4C9").opacity(0.85))
+                                        .shadow(color: Color(hex: "5BA4C9").opacity(0.2), radius: 6, y: 2)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.white.opacity(0.4), lineWidth: 0.8)
+                                )
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.vertical, 20)

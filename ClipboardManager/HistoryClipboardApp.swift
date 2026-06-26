@@ -1,13 +1,23 @@
 import SwiftUI
 import Darwin
+import Sparkle
 
 // MARK: - AppDelegate：保持菜单栏应用常驻后台
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var updaterController: SPUStandardUpdaterController!
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.setActivationPolicy(.accessory)
         ProcessInfo.processInfo.disableSuddenTermination()
         ProcessInfo.processInfo.disableAutomaticTermination("MenuBarExtra requires persistent process")
+
+        // Sparkle 2 自动更新 — 注册菜单项 + 后台定时检查
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true,
+            updaterDelegate: nil,
+            userDriverDelegate: nil
+        )
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
